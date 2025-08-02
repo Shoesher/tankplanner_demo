@@ -36,6 +36,7 @@ public class drive extends SubsystemBase{
     //Odometry
     private DifferentialDriveOdometry odometry;
     private double calcGyro = 0;
+    private double speed = 1;
     private Rotation2d fakeHeading;
     private int motorRPM = 5676; //Assuming you are using sims
     private double driveGearing = 8.46; //Your gear ratio may be different, check your chassis
@@ -105,19 +106,33 @@ public class drive extends SubsystemBase{
     }
 
     public void runDrive(double leftJoy, double rightJoy){
-        if(Math.abs(leftJoy) > 0.1){
-            frontLeft.set(leftJoy);
-            frontRight.set(leftJoy);
-            //Simulates linear velocity of your robot in advantage scope
-            simulateDistance(leftJoy, motorRPM, wheelCirc, driveGearing);
-        }
-
-        if(Math.abs(rightJoy) > 0.1){
-            frontLeft.set(rightJoy);
-            frontRight.set(-rightJoy);
-            //Simulates rotational velocaity of your robot in advantage scope
+        if(Math.abs(leftJoy) > 0.1 || Math.abs(rightJoy) > 0.1){
+            frontLeft.set(leftJoy + rightJoy * speed);
+            frontRight.set(leftJoy - rightJoy * speed);
+            //Simulates linear velocity and rotational velocity of your robot in advantage scope
             fakeHeading = Rotation2d.fromDegrees(simulateGyro(rightJoy));
             publisher2d.set(fakeHeading);
+            simulateDistance(leftJoy, rightJoy, motorRPM, wheelCirc, driveGearing, speed);
+        }
+        else{
+            stopDrive();
+        }
+    }
+
+    private void stopDrive(){
+        frontLeft.set(0);
+        frontRight.set(0);
+    }
+
+    public void speedMode(boolean leftTrigger, boolean rightTrigger){
+        double increment = 0.25;
+        double minSpeed = 0.25;
+        int maxSpeed = 1;
+        if(leftTrigger){
+            speed = (speed > 0.25) ? speed - increment : minSpeed;
+        }
+        if(rightTrigger){
+            speed = (speed < 1) ? speed + increment : maxSpeed;
         }
     }
 
@@ -128,13 +143,13 @@ public class drive extends SubsystemBase{
         return calcGyro;
     }
 
-    private void simulateDistance(double joyInput, int maxRPM, double wheelCirc, double driveGear){
+    private void simulateDistance(double joyInput, double joyInput2, int maxRPM, double wheelCirc, double driveGear, double speedLimit){
         int minute = 60;
-        double speedMetersPerSecond = (((maxRPM*joyInput)/driveGear)/minute)*wheelCirc;
+        double speedMetersPerSecond = ((((maxRPM*joyInput)/driveGear)/minute)*wheelCirc)*speedLimit;
         if(Math.abs(joyInput) > 0.1){
             distance += speedMetersPerSecond;
-            rightEncoder.setPosition(distance);
-            leftEncoder.setPosition(distance);
+            rightEncoder.setPosition(-distance);
+            leftEncoder.setPosition(-distance);
         }
     }
 
