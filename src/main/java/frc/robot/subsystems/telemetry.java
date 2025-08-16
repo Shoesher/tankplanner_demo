@@ -11,10 +11,11 @@ public class telemetry extends SubsystemBase{
     private static telemetry tele = null;
     private PowerDistribution pdp;
     private Field2d field2d;
+    private int pdpID = 6;
     private drive tank = drive.getInstance();
 
     private telemetry(){
-        pdp = new PowerDistribution(6, ModuleType.kCTRE);
+        pdp = new PowerDistribution(pdpID, ModuleType.kCTRE);
         field2d = new Field2d();
         //Send field2d to the dashboard
         SmartDashboard.putData("Field ", field2d);
@@ -23,6 +24,18 @@ public class telemetry extends SubsystemBase{
     public void update(){
         //Send match time to the dashboard
         SmartDashboard.putNumber("Match Time", DriverStation.getMatchTime());
+
+        //Send current gear to the dashboard
+        double currentGear = tank.gear;
+        SmartDashboard.putNumber("Gear ", currentGear);
+
+        //Send current linear velocity to the dashboard
+        double currentSpeed = tank.speedMetersPerSecond;
+        SmartDashboard.putNumber("Velocity ", currentSpeed);
+
+        //Send current rotational velocity to the dashboard
+        double currentRotation = tank.calcGyro;
+        SmartDashboard.putNumber("Rotation ", currentRotation);
         
         //Send current voltage to the dashboard
         double voltage = pdp.getVoltage();

@@ -35,13 +35,17 @@ public class drive extends SubsystemBase{
 
     //Odometry
     private DifferentialDriveOdometry odometry;
-    private double calcGyro = 0;
+    public double calcGyro = 0;
     private double speed = 1;
     private Rotation2d fakeHeading;
     private int motorRPM = 5676; //Assuming you are using sims
     private double driveGearing = 8.46; //Your gear ratio may be different, check your chassis
     private double wheelCirc = 0.48; //Wheel circumference in meters
+
+    //Telemetry
     private double distance = 0;
+    public double gear = 4;
+    public double speedMetersPerSecond = 0;
 
     //Advantage scope
     private StructArrayPublisher<SwerveModuleState> publisher;
@@ -130,9 +134,11 @@ public class drive extends SubsystemBase{
         int maxSpeed = 1;
         if(leftTrigger){
             speed = (speed > 0.25) ? speed - increment : minSpeed;
+            gear -= 1;
         }
         if(rightTrigger){
             speed = (speed < 1) ? speed + increment : maxSpeed;
+            gear += 1;
         }
     }
 
@@ -145,7 +151,7 @@ public class drive extends SubsystemBase{
 
     private void simulateDistance(double joyInput, double joyInput2, int maxRPM, double wheelCirc, double driveGear, double speedLimit){
         int minute = 60;
-        double speedMetersPerSecond = ((((maxRPM*joyInput)/driveGear)/minute)*wheelCirc)*speedLimit;
+        speedMetersPerSecond = ((((maxRPM*joyInput)/driveGear)/minute)*wheelCirc)*speedLimit;
         if(Math.abs(joyInput) > 0.1){
             distance += speedMetersPerSecond;
             rightEncoder.setPosition(-distance);
@@ -162,7 +168,6 @@ public class drive extends SubsystemBase{
         //Send updated pose to advantage scope
         publisher3d.set(currentPose3d);
     }
-
 
     public static drive getInstance(){
         if (tank == null){

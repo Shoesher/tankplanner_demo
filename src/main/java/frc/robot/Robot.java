@@ -8,28 +8,24 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.RobotContainer;
-//import robot subsystems
+
+//importing robot subsystems
 import frc.robot.subsystems.drive;
 import frc.robot.subsystems.operatorinterface;
-// import frc.robot.subsystems.LEDS;
-// import frc.robot.commands.RobotContainer;
 
 public class Robot extends TimedRobot {
   public drive tank;
   public operatorinterface oi;
   public RobotContainer robotContainer;
-  // public LEDS led;
   public Command getAutonomousCommand;
 
-  public Robot() {
-  }
+  public Robot() {}
 
   @Override
   public void robotInit() {
     tank = drive.getInstance();
     oi = operatorinterface.getInstance();
     robotContainer = new RobotContainer();
-    //led = LEDS.getInstance();
   }
 
   @Override
@@ -38,31 +34,22 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledInit() {
-  }
+  public void disabledInit() {}
 
   @Override
   public void disabledPeriodic() {}
 
   @Override
-  public void autonomousInit() {
-
-  }
+  public void autonomousInit() {}
 
   @Override
-  public void autonomousPeriodic() {
-    // led.AutonWave();
-  }
+  public void autonomousPeriodic() {}
 
   @Override
-  public void teleopInit() {
-
-  }
+  public void teleopInit() {}
 
   @Override
-  public void teleopPeriodic() {
-    // led.Wave();
-  }
+  public void teleopPeriodic() {}
 
   @Override
   public void testInit() {}
