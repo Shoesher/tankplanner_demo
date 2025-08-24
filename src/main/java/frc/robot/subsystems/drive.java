@@ -159,6 +159,16 @@ public class drive extends SubsystemBase{
         }
     }
 
+    public void driveToSimDistance(double distanceMeters){
+        distance += distanceMeters;
+        rightEncoder.setPosition(-distance);
+        leftEncoder.setPosition(-distance);
+    }
+
+    public void rotateByDeg(double rotDelta){
+        calcGyro += rotDelta;
+    }
+
     @Override
     public void periodic() {
         odometry.update(fakeHeading, leftEncoder.getPosition()/driveGearing*wheelCirc, rightEncoder.getPosition()/driveGearing*wheelCirc);
