@@ -10,15 +10,13 @@ import java.io.IOException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class tankplanner extends SubsystemBase{
+    private static tankplanner tankLib = null;
+
     private ObjectMapper mapper;
     private String defaultFilePath;
     private File pathFile = null;
     private Path currentPath;   
-
-    //temporary import before .this is used in the drive class
-    private drive tank = drive.getInstance();
-    private double currentHeading = tank.calcGyro;
-
+    
     private tankplanner() {
         mapper = new ObjectMapper();
         //Migrate this to use System. to get the correct path to appdata
@@ -30,17 +28,6 @@ public class tankplanner extends SubsystemBase{
 
         public void addTrajectory(Trajectory newTrajectory){
             trajectories.add(newTrajectory);
-        }
-
-        public Trajectory getTrajectory(int i){
-            Trajectory validTraj = trajectories.get(i);
-
-            if(validTraj != null) {
-                return validTraj;
-            }
-            else {
-                return null;
-            }
         }
     }
 
@@ -116,6 +103,8 @@ public class tankplanner extends SubsystemBase{
     }
 
     private void followPath() { 
+        drive tank = drive.getInstance();
+        double currentHeading = tank.calcGyro;
         for (Trajectory traj : currentPath.trajectories){
             double trajectoryLength = traj.getlength();
             double initialRot = optimizeDelta(currentHeading, traj.getRot(true));
@@ -126,4 +115,11 @@ public class tankplanner extends SubsystemBase{
             tank.rotateByDeg(finalRot);
         }   
     }
-}
+
+    public static tankplanner getInstance(){
+        if (tankLib == null){
+            tankLib = new tankplanner();
+        }
+        return tankLib;
+    }
+}   

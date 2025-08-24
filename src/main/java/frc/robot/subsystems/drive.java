@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
 import frc.robot.constants.Constants;
+
+import java.io.IOException;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -167,6 +170,19 @@ public class drive extends SubsystemBase{
 
     public void rotateByDeg(double rotDelta){
         calcGyro += rotDelta;
+    }
+
+    //Temporary debugging function to test path loading
+    public void callToPath(boolean input1){
+        tankplanner tankplannerLib = tankplanner.getInstance();
+        if(input1){
+            try {
+                tankplannerLib.loadPath("Test1");
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

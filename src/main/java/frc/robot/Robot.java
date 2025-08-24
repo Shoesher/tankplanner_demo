@@ -12,9 +12,11 @@ import frc.robot.commands.RobotContainer;
 //importing robot subsystems
 import frc.robot.subsystems.drive;
 import frc.robot.subsystems.operatorinterface;
+import frc.robot.subsystems.tankplanner;
 
 public class Robot extends TimedRobot {
   public drive tank;
+  public tankplanner tankLib;
   public operatorinterface oi;
   public RobotContainer robotContainer;
   public Command getAutonomousCommand;
@@ -24,6 +26,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     tank = drive.getInstance();
+    tankLib = tankplanner.getInstance();
     oi = operatorinterface.getInstance();
     robotContainer = new RobotContainer();
   }

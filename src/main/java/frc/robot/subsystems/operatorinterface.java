@@ -16,6 +16,7 @@ public class operatorinterface extends SubsystemBase{
     private void updateDrive(){
         tank.runDrive(controller1.getRawAxis(1), controller1.getRawAxis(2));
         tank.speedMode(controller1.getLeftBumperButtonPressed(), controller1.getRightBumperPressed());
+        tank.callToPath(controller1.getYButton());
     }
 
     @Override
